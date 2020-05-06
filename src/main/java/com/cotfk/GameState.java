@@ -41,7 +41,8 @@ public class GameState {
 
     private void initBuiltInSpells() {
         spells.add(new Spell("Fatigue", (target) -> {
-            if (target instanceof Creature c) {
+            if (target instanceof Creature) {
+                Creature c = (Creature) target;
                 for (int i = 0; i < 5; i++) {
                     c.changeEnergy(-10);
                     try {
@@ -52,7 +53,8 @@ public class GameState {
             }
         }, 15, 10, 5));
         spells.add(new Spell("Snare", (target) -> {
-            if (target instanceof Creature c) {
+            if (target instanceof Creature) {
+                Creature c = (Creature) target;
                 c.changeSpeed(-1);
                 try {
                     Thread.sleep(10000);

@@ -4,7 +4,6 @@ import com.cotfk.creatures.Mage;
 import com.cotfk.skills.Spell;
 import com.crown.common.ObjectCollection;
 import com.crown.i18n.I18n;
-import com.crown.maps.Point3D;
 
 import static com.cotfk.Main.gameState;
 
@@ -33,13 +32,9 @@ public class Commands extends ObjectCollection<Command> {
         add(new Command(
             "move",
             (args) -> gameState.getCurrentPlayer().move(
-                gameState.getCurrentPlayer().getPt().plus(
-                    new Point3D(
-                        Integer.parseInt(args.get("x")),
-                        Integer.parseInt(args.get("y")),
-                        0
-                    )
-                )),
+                Integer.parseInt(args.get("x")),
+                Integer.parseInt(args.get("y"))
+            ),
             true,
             new String[] {
                 "x",

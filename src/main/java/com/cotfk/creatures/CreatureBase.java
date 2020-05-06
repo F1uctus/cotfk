@@ -3,8 +3,8 @@ package com.cotfk.creatures;
 import com.crown.creatures.Creature;
 import com.crown.i18n.I18n;
 import com.crown.i18n.ITemplate;
-import com.crown.maps.MapIcon;
 import com.crown.maps.Map;
+import com.crown.maps.MapIcon;
 import com.crown.maps.MapWeight;
 import com.crown.maps.Point3D;
 
@@ -50,7 +50,7 @@ public abstract class CreatureBase extends Creature {
             "stats.level", getLevel(),
             "stats.skillPoints", getSkillPoints(),
             "stats.xp.toNextLevel", getMaxXp(),
-            getPt()
+            getPt0()
         );
     }
 
@@ -166,13 +166,20 @@ public abstract class CreatureBase extends Creature {
         return I18n.of("OK");
     }
 
-    public ITemplate move(Point3D targetPos) {
-        var delta = (int) getPt().getDistance(targetPos);
+    public ITemplate move(int deltaX, int deltaY) {
+        return move(deltaX, deltaY, 0);
+    }
+
+    public ITemplate move(int deltaX, int deltaY, int deltaZ) {
+        var targetPos = getPt0().plus(new Point3D(deltaX, deltaY, deltaZ));
+        var delta = (int) getPt0().getDistance(targetPos);
         // TODO insert path finder
-        if (!map.contains(targetPos) || map.isObstacle(targetPos.x, targetPos.y)) {
+        if (!map.contains(targetPos)
+            || (map.get(targetPos) != null
+                && map.get(targetPos).getMapWeight() == MapWeight.OBSTACLE)) {
             return I18n.of("Cant move here, there is another object!");
         } else if (getEnergy() >= delta) {
-            teleport(targetPos);
+            moveView(deltaX, deltaY, deltaZ);
             changeEnergy(-delta);
             changeXp(delta);
             return I18n.of("OK");

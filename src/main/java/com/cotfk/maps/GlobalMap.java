@@ -22,7 +22,7 @@ public class GlobalMap extends Map {
         super(name, xSize, ySize, zSize, mapEndIcon);
         for (int y = 0; y < ySize; y++) {
             for (int x = 0; x < ySize; x++) {
-                add(new Grass(this, new Point3D(x, y, 0)));
+                add(new Grass(this, new Point3D(x, y, MapLevel.ground)));
             }
         }
         for (int i = 0; i < xSize / 2; i++) {

@@ -37,11 +37,11 @@ public class Mage extends CreatureBase {
             return I18n.of("mage.lowEnergy");
         }
         var targets = new ArrayList<CreatureBase>();
-        if (target != null && pt.getDistance(target.getPt()) <= spell.getAffectedRange()) {
+        if (target != null && getPt0().getDistance(target.getPt0()) <= spell.getAffectedRange()) {
             targets.add(target);
         } else {
             var rangeObjsMatrix = map.getRaw2DArea(
-                getPt(),
+                getPt0(),
                 spell.getAffectedRange()
             );
             for (var objRow : rangeObjsMatrix) {

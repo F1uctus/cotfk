@@ -1,6 +1,6 @@
 package com.cotfk.ui;
 
-import com.crown.maps.MapIcon;
+import com.crown.maps.MapObject;
 import com.crown.maps.Point3D;
 
 import javax.swing.*;
@@ -9,6 +9,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
+import java.util.HashSet;
 
 import static com.cotfk.Main.gameState;
 import static java.awt.RenderingHints.*;
@@ -55,24 +56,55 @@ public class MainPanel extends JPanel {
         var cp = gameState.getCurrentPlayer();
         if (cp != null) {
             radius = cp.getFov();
-            p0 = cp.getPt();
+            p0 = cp.getPt0().withZ(map.zSize - 1);
         }
 
-        MapIcon<?>[][][] icons = map.get3DArea(p0, radius);
-        int tileWidth = getWidth() / icons[0][0].length;
-        for (MapIcon<?>[][] iconDepth : icons) {
-            for (int y = 0; y < iconDepth.length; y++) {
-                for (int x = 0; x < iconDepth[y].length; x++) {
-                    g.drawImage(
-                        ImageTools.resize(
-                            (BufferedImage) iconDepth[y][x].get(),
-                            tileWidth,
-                            tileWidth
-                        ),
-                        tileWidth * x,
-                        tileWidth * y,
-                        null
-                    );
+        var largeObjs = new HashSet<LargeMapObjectContainer>();
+        MapObject[][][] icons = map.getRaw3DArea(p0, radius);
+        var relZero = p0.minus(new Point3D(radius, radius, 0));
+        int tileSide = getWidth() / icons[0][0].length;
+        for (MapObject[][] iconsLayer : icons) {
+            for (int relY = 0; relY < iconsLayer.length; relY++) {
+                for (int relX = 0; relX < iconsLayer[relY].length; relX++) {
+                    MapObject mapObj = iconsLayer[relY][relX];
+                    if (mapObj != null) {
+                        var largeObj = largeObjs
+                            .stream()
+                            .filter((c) -> c.obj == mapObj)
+                            .findFirst()
+                            .orElse(null);
+                        if (largeObj != null
+                            && largeObj.unfilledCellsCount > 0) {
+                            largeObj.unfilledCellsCount--;
+                            if (largeObj.unfilledCellsCount == 0) {
+                                largeObjs.remove(largeObj);
+                            }
+                            continue;
+                        }
+                        var w = mapObj.getWidth();
+                        var h = mapObj.getHeight();
+                        int relX0 = relX;
+                        int relY0 = relY;
+                        if (w > 1 || h > 1) {
+                            largeObjs.add(new LargeMapObjectContainer(mapObj));
+                            var objRelPt0 = mapObj.getPt0().minus(relZero);
+                            relX0 = objRelPt0.x;
+                            relY0 = objRelPt0.y;
+                        }
+                        g.drawImage(
+                            ImageTools.resize(
+                                (BufferedImage) mapObj.getMapIcon().get(),
+                                tileSide * h,
+                                tileSide * w
+                            ),
+                            tileSide * relX0,
+                            tileSide * relY0,
+                            null
+                        );
+                        if (w > 1) {
+                            relX += w - 1;
+                        }
+                    }
                 }
             }
         }
@@ -85,6 +117,16 @@ public class MainPanel extends JPanel {
             g.fillRect(0, 0, dim.width, dim.height);
             g.setColor(Color.BLACK);
             UITools.drawString(g, text, 10, 0);
+        }
+    }
+
+    static class LargeMapObjectContainer {
+        MapObject obj;
+        int unfilledCellsCount;
+
+        LargeMapObjectContainer(MapObject obj) {
+            this.obj = obj;
+            unfilledCellsCount = obj.getParticles().length - 1;
         }
     }
 }

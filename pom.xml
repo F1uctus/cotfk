@@ -49,7 +49,7 @@
         <dependency>
             <groupId>com.github.F1uctus</groupId>
             <artifactId>crown-framework</artifactId>
-            <version>1b8e2f0c81d9d338773d1d27f14ddb1a4fffe071</version>
+            <version>021993f86c30a3315da45362de64fb35f713d475</version>
         </dependency>
     </dependencies>
 </project>

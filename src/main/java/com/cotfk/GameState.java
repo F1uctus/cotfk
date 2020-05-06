@@ -5,6 +5,7 @@ import com.cotfk.creatures.Mage;
 import com.cotfk.creatures.Warrior;
 import com.cotfk.maps.GlobalMap;
 import com.cotfk.maps.GraphicalMapIcon;
+import com.cotfk.maps.MapLevel;
 import com.cotfk.skills.Spell;
 import com.crown.common.ObjectCollection;
 import com.crown.common.utils.Random;
@@ -31,7 +32,7 @@ public class GameState {
         "Global map",
         25,
         25,
-        2,
+        MapLevel.height,
         new GraphicalMapIcon("emptiness.png")
     );
 
@@ -99,7 +100,7 @@ public class GameState {
             pt = Random.getPoint(globalMap);
         } while (globalMap.get(pt) != null
                  && globalMap.get(pt).getMapWeight() == MapWeight.OBSTACLE);
-        pt = pt.withZ(1);
+        pt = pt.withZ(MapLevel.ground + 1);
 
         CreatureBase newPlayer;
         switch (type) {

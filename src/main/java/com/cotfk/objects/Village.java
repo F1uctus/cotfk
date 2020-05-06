@@ -2,6 +2,7 @@ package com.cotfk.objects;
 
 
 import com.cotfk.maps.GraphicalMapIcon;
+import com.cotfk.maps.MapLevel;
 import com.crown.common.utils.Random;
 import com.crown.i18n.I18n;
 import com.crown.i18n.ITemplate;
@@ -16,7 +17,8 @@ public class Village extends MapObject {
     ) {
         this(
             map,
-            Random.getPoint(map).withZ(1)
+            // BUG count object size
+            Random.getPoint(map).withZ(0)
         );
     }
 
@@ -25,11 +27,18 @@ public class Village extends MapObject {
         Point3D pt
     ) {
         super(
-            "Tree",
+            "Village",
             map,
             new GraphicalMapIcon("windmill.png"),
             MapWeight.OBSTACLE,
-            pt
+            new Point3D[] {
+                //  /  \  <- can be passed behind
+                pt.plus(new Point3D(0, 0, MapLevel.ground + 2)),
+                pt.plus(new Point3D(1, 0, MapLevel.ground + 2)),
+                //  |  |  <- on the ground, obstacle
+                pt.plus(new Point3D(0, 1, MapLevel.ground + 1)),
+                pt.plus(new Point3D(1, 1, MapLevel.ground + 1))
+            }
         );
     }
 

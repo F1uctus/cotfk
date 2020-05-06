@@ -2,6 +2,7 @@ package com.cotfk.objects;
 
 
 import com.cotfk.maps.GraphicalMapIcon;
+import com.cotfk.maps.MapLevel;
 import com.crown.common.utils.Random;
 import com.crown.i18n.I18n;
 import com.crown.i18n.ITemplate;
@@ -16,7 +17,7 @@ public class Tree extends MapObject {
     ) {
         this(
             map,
-            Random.getPoint(map).withZ(1)
+            Random.getPoint(map).withZ(MapLevel.ground + 1)
         );
     }
 

@@ -109,7 +109,6 @@ public class GameState {
             newPlayer = new Mage(
                 name,
                 globalMap,
-                new GraphicalMapIcon("tree.png"),
                 pt
             );
             break;
@@ -118,7 +117,6 @@ public class GameState {
             newPlayer = new Warrior(
                 name,
                 globalMap,
-                new GraphicalMapIcon("player.png"),
                 pt
             );
             break;

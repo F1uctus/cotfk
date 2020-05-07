@@ -1,18 +1,18 @@
 package com.cotfk.creatures;
 
+import com.cotfk.maps.GraphicalMapIcon;
 import com.crown.i18n.I18n;
 import com.crown.i18n.ITemplate;
-import com.crown.maps.MapIcon;
 import com.crown.maps.Map;
 import com.crown.maps.MapWeight;
 import com.crown.maps.Point3D;
 
 public class Warrior extends CreatureBase {
-    public Warrior(String name, Map map, MapIcon<?> mapIcon, Point3D pt) {
+    public Warrior(String name, Map map, Point3D pt) {
         super(
             name,
             map,
-            mapIcon,
+            new GraphicalMapIcon("pirate.png"),
             MapWeight.OBSTACLE,
             pt
         );

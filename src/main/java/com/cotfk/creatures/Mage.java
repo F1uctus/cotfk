@@ -1,11 +1,11 @@
 package com.cotfk.creatures;
 
+import com.cotfk.maps.GraphicalMapIcon;
 import com.cotfk.skills.Spell;
 import com.crown.common.ObjectCollection;
 import com.crown.i18n.I18n;
 import com.crown.i18n.ITemplate;
 import com.crown.maps.Map;
-import com.crown.maps.MapIcon;
 import com.crown.maps.MapWeight;
 import com.crown.maps.Point3D;
 
@@ -15,11 +15,11 @@ import java.util.stream.Collectors;
 public class Mage extends CreatureBase {
     public ObjectCollection<Spell> knownSpells = new ObjectCollection<>();
 
-    public Mage(String name, Map map, MapIcon<?> mapIcon, Point3D pt) {
+    public Mage(String name, Map map, Point3D pt) {
         super(
             name,
             map,
-            mapIcon,
+            new GraphicalMapIcon("mage.png"),
             MapWeight.OBSTACLE,
             pt
         );

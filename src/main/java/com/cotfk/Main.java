@@ -9,13 +9,14 @@ import com.crown.i18n.I18n;
 import com.crown.time.Timeline;
 import com.crown.time.VirtualClock;
 
+import java.awt.*;
 import java.util.*;
 
 public class Main {
     public static final HashMap<String, ResourceBundle> bundles = new HashMap<>();
     public static final Scanner s = new Scanner(System.in);
 
-    private static final MainWindow mainWindow = new MainWindow();
+    private static MainWindow mainWindow;
     private static boolean lastCmdSuccess = true;
 
     public static void main(String[] args) {
@@ -23,19 +24,22 @@ public class Main {
         bundles.put("en", ResourceBundle.getBundle("gameMessages", new Locale("en_US")));
         I18n.init(bundles);
 
-        Timeline.init(
-            new VirtualClock(
-                10,
-                mainWindow::repaint
-            ).startAtRnd(),
-            new GameState(
-                new GlobalMap(
-                    "Global map",
-                    100,
-                    100,
-                    MapLevel.height
-                ))
-        );
+        EventQueue.invokeLater(() -> {
+            mainWindow = new MainWindow();
+            Timeline.init(
+                new VirtualClock(
+                    24,
+                    mainWindow::repaint
+                ).startAtRnd(),
+                new GameState(
+                    new GlobalMap(
+                        "Global map",
+                        100,
+                        100,
+                        MapLevel.height
+                    ))
+            );
+        });
 
         System.out.println(I18n.of("welcome"));
         System.out.println(I18n.of("welcome.help"));
@@ -73,7 +77,6 @@ public class Main {
                 System.out.println(result.getLocalized(lang));
             }
         }
-        mainWindow.repaint();
     }
 
     public static void printInputPrefix() {

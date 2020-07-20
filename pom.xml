@@ -3,9 +3,8 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <groupId>groupId</groupId>
-    <artifactId>CrownOfTheFallenKing</artifactId>
+    <artifactId>cotfk</artifactId>
     <version>0.1</version>
     <build>
         <plugins>
@@ -48,8 +47,8 @@
         </dependency>
         <dependency>
             <groupId>com.github.F1uctus</groupId>
-            <artifactId>crown-framework</artifactId>
-            <version>021993f86c30a3315da45362de64fb35f713d475</version>
+            <artifactId>crown</artifactId>
+            <version>bbbd4473dd4fb0b7ede1949acc9777db06e7d34d</version>
         </dependency>
     </dependencies>
 </project>

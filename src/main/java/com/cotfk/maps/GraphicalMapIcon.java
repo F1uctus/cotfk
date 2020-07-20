@@ -1,6 +1,10 @@
 package com.cotfk.maps;
 
 import com.cotfk.ui.ImageTools;
+import com.cotfk.ui.MapIcons;
+import com.crown.i18n.I18n;
+import com.crown.i18n.ITemplate;
+import com.crown.maps.Direction;
 import com.crown.maps.MapIcon;
 
 import javax.imageio.ImageIO;
@@ -9,27 +13,34 @@ import java.io.IOException;
 
 public class GraphicalMapIcon extends MapIcon<BufferedImage> {
     private final BufferedImage img;
-    private final BufferedImage imgFlipped;
 
-    public GraphicalMapIcon(String imagePath) {
-        BufferedImage v;
+    public GraphicalMapIcon(String keyName) {
+        super(keyName);
+        BufferedImage img;
         try {
-            v = ImageIO.read(getClass().getResource("/icons/" + imagePath));
+            // TODO: replace with new ImageIcon(...).getImage() (GIF support)
+            img = ImageIO.read(MapIcons.class.getResource("/icons/" + keyName + ".png"));
         } catch (IOException e) {
             e.printStackTrace();
-            v = null;
+            img = null;
         }
-        this.img = v;
-        imgFlipped = ImageTools.flipX(v);
+        this.img = img;
     }
 
-    public GraphicalMapIcon(BufferedImage value) {
-        this.img = value;
-        imgFlipped = ImageTools.flipX(value);
+    @Override
+    public ITemplate getName() {
+        return I18n.of("");
+    }
+
+    @Override
+    public ITemplate getDescription() {
+        return I18n.of("");
     }
 
     public BufferedImage get() {
-        if (flipped) return imgFlipped;
+        if (direction == Direction.east) {
+            return ImageTools.flipX(img);
+        }
         return img;
     }
 }

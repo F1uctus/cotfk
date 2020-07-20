@@ -1,17 +1,20 @@
 package com.cotfk;
 
+import com.cotfk.commands.Actor;
 import com.cotfk.commands.CommandParser;
+import com.cotfk.maps.GlobalMap;
+import com.cotfk.maps.MapLevel;
 import com.cotfk.ui.MainWindow;
 import com.crown.i18n.I18n;
+import com.crown.time.Timeline;
+import com.crown.time.VirtualClock;
 
 import java.util.*;
 
 public class Main {
     public static final HashMap<String, ResourceBundle> bundles = new HashMap<>();
-    public static final GameState gameState = new GameState();
     public static final Scanner s = new Scanner(System.in);
 
-    private static final CommandParser parser = new CommandParser();
     private static final MainWindow mainWindow = new MainWindow();
     private static boolean lastCmdSuccess = true;
 
@@ -19,6 +22,20 @@ public class Main {
         bundles.put("ru", ResourceBundle.getBundle("gameMessages", new Locale("ru_RU")));
         bundles.put("en", ResourceBundle.getBundle("gameMessages", new Locale("en_US")));
         I18n.init(bundles);
+
+        Timeline.init(
+            new VirtualClock(
+                10,
+                mainWindow::repaint
+            ).startAtRnd(),
+            new GameState(
+                new GlobalMap(
+                    "Global map",
+                    100,
+                    100,
+                    MapLevel.height
+                ))
+        );
 
         System.out.println(I18n.of("welcome"));
         System.out.println(I18n.of("welcome.help"));
@@ -43,17 +60,17 @@ public class Main {
     }
 
     public static void invoke(String command, boolean silent) {
-        var result = parser.parse(command);
+        var result = CommandParser.parse(command);
 
         if (!silent) {
             var lang = "en";
-            if (gameState.getCurrentPlayer() != null) {
-                lang = gameState.getCurrentPlayer().lang;
+            var cp = Actor.get();
+            if (cp != null) {
+                lang = cp.lang;
             }
-            var localizedResult = result.getLocalized(lang);
-            lastCmdSuccess = localizedResult.equals("OK");
+            lastCmdSuccess = result.equals(I18n.okMessage);
             if (!lastCmdSuccess) {
-                System.out.println(localizedResult);
+                System.out.println(result.getLocalized(lang));
             }
         }
         mainWindow.repaint();
@@ -61,8 +78,9 @@ public class Main {
 
     public static void printInputPrefix() {
         String inputPrefix = lastCmdSuccess ? "✓ " : "";
-        if (gameState.getCurrentPlayer() != null) {
-            inputPrefix += gameState.getCurrentPlayer().getName().getLocalized();
+        var cp = Actor.get();
+        if (cp != null) {
+            inputPrefix += cp.getName().getLocalized();
         } else {
             inputPrefix += "#cotfk";
         }

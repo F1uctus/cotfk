@@ -9,34 +9,32 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class CommandParser {
-    static final Commands commands = new Commands().fromBuiltIn();
-
     public static String clear(String input) {
         return input.strip().toLowerCase();
     }
 
-    public ITemplate parse(String input) {
+    public static ITemplate parse(String input) {
         input = clear(input);
         if (input.isBlank()) {
-            return I18n.of("OK");
+            return I18n.okMessage;
         }
         final ArrayList<String> inputParts =
             new ArrayList<>(Arrays.asList(clear(input)
-                                              .replaceAll("\\s+", " ")
-                                              .split(" ")));
+                .replaceAll("\\s+", " ")
+                .split(" ")));
 
         // validating input
         if (inputParts.size() == 0) {
-            return (I18n.of("command.unknown"));
+            return I18n.of("command.unknown");
         }
 
-        var cmd = commands.get(inputParts.get(0));
+        var cmd = Commands.getCommands().get(inputParts.get(0));
         if (cmd == null) {
-            return (I18n.of("command.unknown", "\n", "welcome.help"));
+            return I18n.of("command.unknown", "\n", "welcome.help");
         }
 
-        if (cmd.requiresPlayer && Main.gameState.getCurrentPlayer() == null) {
-            return (I18n.of("player.notSelected"));
+        if (cmd.requiresPlayer && Actor.get() == null) {
+            return I18n.of("player.notSelected");
         }
 
         int minArgs = cmd.getFormalParameters().length;
@@ -67,7 +65,7 @@ public class CommandParser {
                 }
                 var param = clear(Main.s.nextLine());
                 if (param.equals("!x")) {
-                    return I18n.of("OK");
+                    return I18n.okMessage;
                 }
                 inputParts.add(param);
             }

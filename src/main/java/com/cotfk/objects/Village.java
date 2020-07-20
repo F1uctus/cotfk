@@ -1,54 +1,28 @@
 package com.cotfk.objects;
 
-
-import com.cotfk.maps.GraphicalMapIcon;
 import com.cotfk.maps.MapLevel;
+import com.cotfk.ui.MapIcons;
 import com.crown.common.utils.Random;
-import com.crown.i18n.I18n;
-import com.crown.i18n.ITemplate;
-import com.crown.maps.Map;
-import com.crown.maps.MapObject;
-import com.crown.maps.MapWeight;
-import com.crown.maps.Point3D;
+import com.crown.maps.*;
 
 public class Village extends MapObject {
-    public Village(
-        Map map
-    ) {
-        this(
-            map,
-            // BUG count object size
-            Random.getPoint(map).withZ(0)
-        );
-    }
+    public static final int size = 4;
 
-    public Village(
-        Map map,
-        Point3D pt
-    ) {
+    public Village(Map map) {
         super(
             "Village",
             map,
-            new GraphicalMapIcon("windmill.png"),
+            MapIcons.getIcons().get("village"),
             MapWeight.OBSTACLE,
-            new Point3D[] {
-                //  /  \  <- can be passed behind
-                pt.plus(new Point3D(0, 0, MapLevel.ground + 2)),
-                pt.plus(new Point3D(1, 0, MapLevel.ground + 2)),
-                //  |  |  <- on the ground, obstacle
-                pt.plus(new Point3D(0, 1, MapLevel.ground + 1)),
-                pt.plus(new Point3D(1, 1, MapLevel.ground + 1))
-            }
+            LargeObjectTemplates.getSquareLinearZTemplate(
+                Random.getPoint(map, size, size).withZ(MapLevel.ground + 1),
+                size
+            )
         );
     }
 
     @Override
-    public ITemplate getName() {
-        return I18n.of("village");
-    }
-
-    @Override
-    public ITemplate getDescription() {
-        return I18n.of("");
+    public MapIcon<?> getMapIcon() {
+        return MapIcons.getIcons().get(getMapIconId());
     }
 }

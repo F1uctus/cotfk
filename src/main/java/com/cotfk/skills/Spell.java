@@ -4,18 +4,33 @@ import com.crown.i18n.I18n;
 import com.crown.i18n.ITemplate;
 import com.crown.maps.MapObject;
 import com.crown.skills.Skill;
+import com.crown.time.Action;
 
-import java.util.function.Consumer;
+public class Spell<T extends MapObject> extends Skill<T> {
+    private final boolean affectsCaster;
 
-public class Spell extends Skill {
     public Spell(
+        Class<T> targetClass,
         String keyName,
-        Consumer<MapObject> effect,
+        Action<T> effect,
         int energyCost,
         int learnEnergyCost,
-        int affectedRange
+        int affectedRange,
+        boolean affectsCaster
     ) {
-        super(keyName, effect, energyCost, learnEnergyCost, affectedRange);
+        super(
+            targetClass,
+            keyName,
+            effect,
+            energyCost,
+            learnEnergyCost,
+            affectedRange
+        );
+        this.affectsCaster = affectsCaster;
+    }
+
+    public boolean affectsCaster() {
+        return affectsCaster;
     }
 
     public ITemplate getName() {

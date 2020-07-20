@@ -1,99 +1,104 @@
 package com.cotfk.creatures;
 
-import com.cotfk.maps.GraphicalMapIcon;
 import com.cotfk.skills.Spell;
-import com.crown.common.ObjectCollection;
+import com.cotfk.ui.MapIcons;
+import com.crown.common.ObjectsMap;
+import com.crown.creatures.Creature;
 import com.crown.i18n.I18n;
 import com.crown.i18n.ITemplate;
-import com.crown.maps.Map;
-import com.crown.maps.MapWeight;
-import com.crown.maps.Point3D;
+import com.crown.maps.*;
+import com.crown.time.Action;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 public class Mage extends CreatureBase {
-    public ObjectCollection<Spell> knownSpells = new ObjectCollection<>();
+    public final ObjectsMap<Spell> knownSpells = new ObjectsMap<>();
 
     public Mage(String name, Map map, Point3D pt) {
         super(
             name,
             map,
-            new GraphicalMapIcon("mage.png"),
+            MapIcons.getIcons().get("mage"),
             MapWeight.OBSTACLE,
             pt
         );
     }
 
-    public ITemplate cast(Spell spell) {
-        return cast(spell, null);
-    }
-
-    public ITemplate cast(Spell spell, CreatureBase target) {
+    public <T extends MapObject> ITemplate cast(Spell<T> spell, @Nullable T target) {
         if (knownSpells.get(spell.getKeyName()) == null) {
             return I18n.of("mage.dontKnowSpell");
         }
         if (getEnergy() < spell.getEnergyCost()) {
             return I18n.of("mage.lowEnergy");
         }
-        var targets = new ArrayList<CreatureBase>();
+        ArrayList<T> targets;
         if (target != null && getPt0().getDistance(target.getPt0()) <= spell.getAffectedRange()) {
+            targets = new ArrayList<>();
             targets.add(target);
         } else {
-            var rangeObjsMatrix = map.getRaw2DArea(
-                getPt0(),
-                spell.getAffectedRange()
-            );
-            for (var objRow : rangeObjsMatrix) {
-                for (var obj : objRow) {
-                    if (obj instanceof CreatureBase) {
-                        targets.add((CreatureBase) obj);
-                    }
-                }
+            targets = getMap().getAll(spell.getTargetClass(), getPt0(), spell.getAffectedRange());
+            if (!spell.affectsCaster()) {
+                targets.remove(this);
             }
         }
         if (targets.size() == 0) {
             return I18n.of("mage.tooFar");
         }
+        return getTimeline().perform(new Action<Creature>(this) {
+            @Override
+            public ITemplate perform() {
+                for (var tgt : targets) {
+                    spell.perform(tgt);
+                    changeEnergy(-spell.getEnergyCost());
+                }
 
-        for (var tgt : targets) {
-            spell.apply(tgt);
-            changeEnergy(-spell.getEnergyCost());
-        }
+                return I18n.fmtOf(
+                    "mage.casted",
+                    getName(),
+                    targets
+                        .stream()
+                        .map(T::getName)
+                        .map(ITemplate::getLocalized)
+                        .collect(Collectors.joining(", ")),
+                    spell.getName()
+                );
+            }
 
-        return I18n.fmtOf(
-            "mage.casted",
-            getName(),
-            targets
-                .stream()
-                .map(CreatureBase::getName)
-                .map(ITemplate::getLocalized)
-                .collect(Collectors.joining(", ")),
-            spell.getName()
-        );
+            @Override
+            public ITemplate rollback() {
+                for (var tgt : targets) {
+                    spell.rollback(tgt);
+                    changeEnergy(-spell.getEnergyCost());
+                }
+                return I18n.okMessage;
+            }
+        });
     }
 
-    public ITemplate learn(Spell spell) {
+    public ITemplate learn(Spell<?> spell) {
         if (getEnergy() < spell.getLearnEnergyCost()) {
             return I18n.of("mage.learnLowEnergy");
         }
-        changeEnergy(-spell.getLearnEnergyCost());
-        knownSpells.add(spell);
-        return I18n.fmtOf(
-            "mage.learned",
-            getName(),
-            spell.getName()
-        );
-    }
+        return getTimeline().perform(new Action<Creature>(this) {
+            @Override
+            public ITemplate perform() {
+                changeEnergy(-spell.getLearnEnergyCost());
+                knownSpells.add(spell);
+                return I18n.fmtOf(
+                    "mage.learned",
+                    getName(),
+                    spell.getName()
+                );
+            }
 
-    @Override
-    public ITemplate getName() {
-        return I18n.of(getKeyName());
-    }
-
-    @Override
-    public ITemplate getDescription() {
-        // TODO add descriptions for named objects
-        return I18n.of("");
+            @Override
+            public ITemplate rollback() {
+                changeEnergy(spell.getLearnEnergyCost());
+                knownSpells.remove(spell);
+                return I18n.okMessage;
+            }
+        });
     }
 }

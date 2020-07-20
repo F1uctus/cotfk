@@ -5,14 +5,14 @@ import com.cotfk.ui.MapIcons;
 import com.crown.common.utils.Random;
 import com.crown.maps.*;
 
-public class Tree extends MapObject {
-    public static final int size = 2;
+public class House extends MapObject {
+    public static final int size = 3;
 
-    public Tree(Map map) {
+    public House(Map map) {
         super(
-            "Tree",
+            "House",
             map,
-            MapIcons.getIcons().get("tree"),
+            MapIcons.getIcons().get("house1"),
             MapWeight.OBSTACLE,
             LargeObjectTemplates.getSquareLinearZTemplate(
                 Random.getPoint(map, size, size).withZ(MapLevel.ground + 1),

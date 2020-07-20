@@ -1,6 +1,7 @@
 package com.cotfk.ui;
 
 import com.cotfk.Main;
+import com.cotfk.commands.Actor;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,13 +15,13 @@ public class MainWindow extends JFrame {
         setUndecorated(true);
         add(new MainPanel(this));
         setLocation(25, 25);
-        setMinimumSize(new Dimension(650, 650));
+        setMinimumSize(new Dimension(500, 500));
         setVisible(true);
 
         addKeyListener(new KeyListener() {
             public void keyPressed(KeyEvent e) {
                 int key = e.getKeyCode();
-                var cp = Main.gameState.getCurrentPlayer();
+                var cp = Actor.get();
                 if (cp != null) {
                     if (key == KeyEvent.VK_LEFT) {
                         Main.invoke("move -1 0", true);

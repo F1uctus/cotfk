@@ -12,8 +12,8 @@ public class UITools {
             }
         }
         return new Dimension(
-            (int) (g.getFontMetrics().stringWidth(longest) * 1.15),
-            g.getFontMetrics().getHeight() * lines.length + 15
+            (int) (g.getFontMetrics().stringWidth(longest) * 1.1) + 10,
+            g.getFontMetrics().getHeight() * lines.length + 10
         );
     }
 

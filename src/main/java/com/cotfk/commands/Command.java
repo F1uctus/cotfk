@@ -7,7 +7,7 @@ import org.springframework.util.LinkedCaseInsensitiveMap;
 
 import java.util.function.Function;
 
-class Command extends NamedObject {
+public class Command extends NamedObject {
     public final boolean requiresPlayer;
 
     private final Function<LinkedCaseInsensitiveMap<String>, ITemplate> action;

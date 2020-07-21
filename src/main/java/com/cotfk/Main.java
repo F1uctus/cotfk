@@ -77,6 +77,7 @@ public class Main {
                 System.out.println(result.getLocalized(lang));
             }
         }
+        mainWindow.repaint();
     }
 
     public static void printInputPrefix() {

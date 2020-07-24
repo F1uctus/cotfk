@@ -48,7 +48,7 @@
         <dependency>
             <groupId>com.github.F1uctus</groupId>
             <artifactId>crown</artifactId>
-            <version>master-SNAPSHOT</version>
+            <version>4dbbc5ebb6fc30990025fe2f46092fb7d021adb5</version>
         </dependency>
     </dependencies>
 </project>

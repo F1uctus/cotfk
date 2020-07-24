@@ -5,17 +5,20 @@ import com.cotfk.commands.Actor;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.*;
+
+import static com.cotfk.Main.MAP_SIZE;
 
 public class MainWindow extends JFrame {
+    private Point initialClick;
+
     public MainWindow() {
         super("Crown of the Fallen King");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setUndecorated(true);
-        add(new MainPanel(this));
         setLocation(25, 25);
-        setMinimumSize(new Dimension(500, 500));
+        setMinimumSize(new Dimension(MAP_SIZE * 5, MAP_SIZE * 5));
+        setContentPane(new MapPanel(this));
         setVisible(true);
 
         addKeyListener(new KeyListener() {
@@ -39,6 +42,21 @@ public class MainWindow extends JFrame {
             }
 
             public void keyTyped(KeyEvent e) {
+            }
+        });
+        addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+                initialClick = e.getPoint();
+            }
+        });
+        addMouseMotionListener(new MouseMotionAdapter() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                int thisX = getLocation().x;
+                int thisY = getLocation().y;
+                int deltaX = e.getX() - initialClick.x;
+                int deltaY = e.getY() - initialClick.y;
+                setLocation(thisX + deltaX, thisY + deltaY);
             }
         });
     }

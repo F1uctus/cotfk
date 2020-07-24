@@ -19,6 +19,8 @@ public class Main {
     private static MainWindow mainWindow;
     private static boolean lastCmdSuccess = true;
 
+    public static final int MAP_SIZE = 101;
+
     public static void main(String[] args) {
         bundles.put("ru", ResourceBundle.getBundle("gameMessages", new Locale("ru_RU")));
         bundles.put("en", ResourceBundle.getBundle("gameMessages", new Locale("en_US")));
@@ -34,8 +36,8 @@ public class Main {
                 new GameState(
                     new GlobalMap(
                         "Global map",
-                        100,
-                        100,
+                        MAP_SIZE,
+                        MAP_SIZE,
                         MapLevel.height
                     ))
             );

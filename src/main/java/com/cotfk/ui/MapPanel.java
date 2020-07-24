@@ -1,51 +1,48 @@
 package com.cotfk.ui;
 
 import com.cotfk.commands.Actor;
+import com.crown.maps.Map;
 import com.crown.maps.*;
 import com.crown.time.Timeline;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
-import java.util.HashSet;
-import java.util.Locale;
+import java.util.*;
 
 import static java.awt.RenderingHints.*;
 
-public class MainPanel extends JPanel {
-    private Point initialClick;
-
+public class MapPanel extends JPanel {
     private final DateTimeFormatter timeFormatter =
         DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
             .withLocale(Locale.UK)
             .withZone(ZoneOffset.UTC);
 
-    MainPanel(JFrame wnd) {
+    MapPanel(JFrame parentWindow) {
         super();
-
-        addMouseListener(new MouseAdapter() {
-            public void mousePressed(MouseEvent e) {
-                initialClick = e.getPoint();
-            }
-        });
-
-        addMouseMotionListener(new MouseMotionAdapter() {
-            @Override
-            public void mouseDragged(MouseEvent e) {
-                int thisX = wnd.getLocation().x;
-                int thisY = wnd.getLocation().y;
-                int deltaX = e.getX() - initialClick.x;
-                int deltaY = e.getY() - initialClick.y;
-                wnd.setLocation(thisX + deltaX, thisY + deltaY);
-            }
-        });
+        setPreferredSize(
+            new Dimension(
+                parentWindow.getWidth(),
+                parentWindow.getWidth()
+            )
+        );
     }
+
+    // Double buffering
+    private BufferedImage dbImage;
+    private Graphics dbg;
+
+    private UUID[][] lastMapIds;
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
+
+        if (Timeline.main == null || !isValid()) {
+            return;
+        }
+
         ((Graphics2D) g).setRenderingHint(
             KEY_ANTIALIASING,
             VALUE_ANTIALIAS_ON
@@ -54,16 +51,17 @@ public class MainPanel extends JPanel {
             KEY_RENDERING,
             VALUE_RENDER_QUALITY
         );
-        setBackground(Color.BLACK);
 
-        if (Timeline.main == null) {
-            return;
+        var player = Actor.get();
+
+        if (dbImage == null) {
+            // Create the buffer
+            dbImage = (BufferedImage) createImage(getWidth(), getHeight());
+            dbg = dbImage.getGraphics();
         }
-
         Map map;
         int radius;
         Point3D centerPoint;
-        var player = Actor.get();
         if (player == null) {
             map = Timeline.main.getGameState().getGlobalMap();
             radius = map.xSize / 2;
@@ -73,16 +71,61 @@ public class MainPanel extends JPanel {
             radius = player.getFov();
             centerPoint = player.getPt0().withZ(map.zSize - 1);
         }
+        MapObject[][][] objects = map.getRaw3DArea(centerPoint, radius);
+        int maxZ = objects.length;
+        int maxY = objects[0].length;
+        int maxX = objects[0][0].length;
+        var mapIds = new UUID[maxY][maxX];
+        for (MapObject[][] object : objects) {
+            for (int y = 0; y < maxY; y++) {
+                for (int x = 0; x < maxX; x++) {
+                    var mapObj = object[y][x];
+                    if (mapObj != null) {
+                        mapIds[y][x] = mapObj.getId();
+                    }
+                }
+            }
+        }
+        if (lastMapIds == null
+            || !(maxY == lastMapIds.length && maxX == lastMapIds[0].length)
+            || !Arrays.deepEquals(mapIds, lastMapIds)) {
+            drawMapToBuffer(dbg, objects, centerPoint, radius);
+        }
+        lastMapIds = mapIds;
+        g.drawImage(dbImage, 0, 0, null);
 
+        var nowTime = timeFormatter.format(Timeline.getClock().now());
+        var summary = nowTime + "\n";
+        if (player != null) {
+            var tl = player.getTimeline();
+            if (tl != Timeline.main && tl != null) {
+                summary += " (- " + player.getTimeline().getOffsetToMain() + ")";
+            }
+            summary += String.join(
+                "\n",
+                player.getStats().getLocalized(player.lang)
+            );
+        }
+        g.setFont(g.getFont().
+
+            deriveFont(14f));
+        Dimension dim = UITools.getTextSize(g, summary);
+        g.setColor(new
+
+            Color(255, 255, 255, 80));
+        g.fillRect(0, 0, dim.width, dim.height);
+        g.setColor(Color.BLACK);
+        UITools.drawString(g, summary, 10, 0);
+    }
+
+    private void drawMapToBuffer(Graphics g, MapObject[][][] objects, Point3D centerPoint, int radius) {
         var largeObjs = new HashSet<LargeMapObjectContainer>();
-        MapObject[][][] icons = map.getRaw3DArea(centerPoint, radius);
         var relZero = centerPoint.minus(new Point3D(radius, radius, 0));
-        int tileSide = getWidth() / icons[0][0].length;
-        for (MapObject[][] iconsLayer : icons) {
-            for (int relY = 0; relY < iconsLayer.length; relY++) {
-                for (int relX = 0; relX < iconsLayer[relY].length; relX++) {
-                    MapObject mapObj = iconsLayer[relY][relX];
-                    // second check prevents NPE after timeline commit/rollback
+        int tileSide = getWidth() / (radius * 2 + 1);
+        for (MapObject[][] objectsLayer : objects) {
+            for (int relY = 0; relY < objectsLayer.length; relY++) {
+                for (int relX = 0; relX < objectsLayer[relY].length; relX++) {
+                    MapObject mapObj = objectsLayer[relY][relX];
                     if (mapObj != null && mapObj.getMap() != null) {
                         var largeObj = largeObjs
                             .stream()
@@ -110,7 +153,7 @@ public class MainPanel extends JPanel {
                             relY0 = objRelPt0.y;
                         }
                         g.drawImage(
-                            ImageTools.resize(
+                            ImageTools.resizeTile(
                                 (BufferedImage) mapObj.getMapIcon().get(),
                                 tileSide * h,
                                 tileSide * w
@@ -125,24 +168,6 @@ public class MainPanel extends JPanel {
                     }
                 }
             }
-        }
-
-        if (player != null) {
-            var tl = player.getTimeline();
-            var nowTime = timeFormatter.format(Timeline.getClock().now());
-            if (tl != Timeline.main && tl != null) {
-                nowTime += " (- " + player.getTimeline().getOffsetToMain() + ")";
-            }
-            var text = String.join(
-                "\n", nowTime,
-                player.getStats().getLocalized(player.lang)
-            );
-            g.setFont(g.getFont().deriveFont(14f));
-            Dimension dim = UITools.getTextSize(g, text);
-            g.setColor(new Color(255, 255, 255, 80));
-            g.fillRect(0, 0, dim.width, dim.height);
-            g.setColor(Color.BLACK);
-            UITools.drawString(g, text, 10, 0);
         }
     }
 

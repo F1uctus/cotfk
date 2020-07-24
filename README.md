@@ -1,6 +1,10 @@
 <h1 align="center">CotFK</h1>
 
 <p align="center">
+    <a href="https://github.com/actions/setup-java">
+        <img src="https://github.com/F1uctus/cotfk/workflows/Maven/badge.svg"
+             alt="GitHub Actions status for 'Maven'">
+    </a>
     <a href="https://gitmoji.carloscuesta.me">
         <img src="https://img.shields.io/badge/gitmoji-%20😜%20😍-FFDD67.svg?style=flat-square"
              alt="Gitmoji">

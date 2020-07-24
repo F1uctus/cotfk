@@ -3,7 +3,6 @@ package com.cotfk.creatures;
 import com.cotfk.skills.Spell;
 import com.cotfk.ui.MapIcons;
 import com.crown.common.ObjectsMap;
-import com.crown.creatures.Creature;
 import com.crown.i18n.I18n;
 import com.crown.i18n.ITemplate;
 import com.crown.maps.*;
@@ -13,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
-public class Mage extends CreatureBase {
+public class Mage extends Human {
     public final ObjectsMap<Spell> knownSpells = new ObjectsMap<>();
 
     public Mage(String name, Map map, Point3D pt) {
@@ -46,7 +45,7 @@ public class Mage extends CreatureBase {
         if (targets.size() == 0) {
             return I18n.of("mage.tooFar");
         }
-        return getTimeline().perform(new Action<Creature>(this) {
+        return getTimeline().perform(new Action<Human>(this) {
             @Override
             public ITemplate perform() {
                 for (var tgt : targets) {
@@ -81,7 +80,7 @@ public class Mage extends CreatureBase {
         if (getEnergy() < spell.getLearnEnergyCost()) {
             return I18n.of("mage.learnLowEnergy");
         }
-        return getTimeline().perform(new Action<Creature>(this) {
+        return getTimeline().perform(new Action<Human>(this) {
             @Override
             public ITemplate perform() {
                 changeEnergy(-spell.getLearnEnergyCost());

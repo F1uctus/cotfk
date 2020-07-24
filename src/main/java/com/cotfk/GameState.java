@@ -5,7 +5,7 @@ import com.cotfk.creatures.Warrior;
 import com.cotfk.maps.MapLevel;
 import com.crown.BaseGameState;
 import com.crown.common.utils.Random;
-import com.crown.creatures.Creature;
+import com.crown.creatures.Organism;
 import com.crown.i18n.I18n;
 import com.crown.i18n.ITemplate;
 import com.crown.maps.Map;
@@ -28,7 +28,7 @@ public class GameState extends BaseGameState {
 
         Point3D pt = Random.getFreePoint(getGlobalMap(), new Point3D(-1, -1, MapLevel.ground + 1));
 
-        Creature newPlayer;
+        Organism newPlayer;
         if ("mage".startsWith(type)) {
             newPlayer = new Mage(
                 name,
@@ -51,7 +51,7 @@ public class GameState extends BaseGameState {
     public String playersAsTable() {
         return players.values()
             .stream()
-            .map(Creature::getName)
+            .map(Organism::getName)
             .map(ITemplate::getLocalized)
             .collect(Collectors.joining("\n"));
     }

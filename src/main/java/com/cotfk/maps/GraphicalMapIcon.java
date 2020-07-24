@@ -38,9 +38,17 @@ public class GraphicalMapIcon extends MapIcon<BufferedImage> {
     }
 
     public BufferedImage get() {
-        if (direction == Direction.east) {
+        var dir = getDirection();
+        if (dir == Direction.east
+            || dir == Direction.northEast
+            || dir == Direction.southEast) {
             return ImageTools.flipX(img);
         }
         return img;
+    }
+
+    @Override
+    public void stepAnimation() {
+
     }
 }

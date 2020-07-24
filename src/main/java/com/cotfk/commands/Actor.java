@@ -1,16 +1,16 @@
 package com.cotfk.commands;
 
 import com.cotfk.GameState;
-import com.cotfk.creatures.CreatureBase;
+import com.cotfk.creatures.Human;
 import com.crown.i18n.I18n;
 import com.crown.i18n.ITemplate;
 import com.crown.time.Timeline;
 
 public class Actor {
     private static Timeline lastUsedTimeline;
-    private static CreatureBase player;
+    private static Human player;
 
-    public static CreatureBase get() {
+    public static Human get() {
         return player;
     }
 
@@ -30,7 +30,7 @@ public class Actor {
         if (target == null) {
             return I18n.of("player.notExists");
         }
-        Actor.player = (CreatureBase) target;
+        Actor.player = (Human) target;
         return I18n.okMessage;
     }
 

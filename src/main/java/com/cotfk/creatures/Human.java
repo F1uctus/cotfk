@@ -1,15 +1,19 @@
 package com.cotfk.creatures;
 
 import com.cotfk.ui.MapIcons;
-import com.crown.creatures.Creature;
+import com.crown.creatures.Organism;
 import com.crown.i18n.I18n;
 import com.crown.i18n.ITemplate;
 import com.crown.maps.*;
+import com.crown.time.Action;
 
-public abstract class CreatureBase extends Creature {
+public class Human extends Organism {
     public String lang = "en";
 
-    public CreatureBase(
+    protected final int maxFov = 20;
+    protected int fov;
+
+    public Human(
         String name,
         Map map,
         MapIcon<?> mapIcon,
@@ -22,13 +26,13 @@ public abstract class CreatureBase extends Creature {
             mapIcon,
             mapWeight,
             position,
-            200,
+            100,
             100,
             1,
-            5,
             1
         );
         xp = 100;
+        fov = 5;
     }
 
     public ITemplate getStats() {
@@ -58,6 +62,43 @@ public abstract class CreatureBase extends Creature {
             getPt0()
         );
     }
+
+    // region FOV
+
+    /**
+     * Maximal allowed field of vision for creature.
+     */
+    public int getMaxFov() {
+        return maxFov;
+    }
+
+    /**
+     * Returns creature's field of vision.
+     */
+    public int getFov() {
+        return fov;
+    }
+
+    /**
+     * Changes creature's field of vision by {@code delta}.
+     * Timeline support included.
+     */
+    public ITemplate changeFovBy(int delta) {
+        return getTimeline().perform(Action.change(this, "changeFov", delta));
+    }
+
+    /**
+     * Internal logic, may be overridden if needed.
+     */
+    public ITemplate changeFov(int delta) {
+        if (invalidDelta(fov, delta, maxFov)) {
+            return I18n.invalidDeltaMessage;
+        }
+        fov += delta;
+        return I18n.okMessage;
+    }
+
+    // endregion
 
     @Override
     public MapIcon<?> getMapIcon() {

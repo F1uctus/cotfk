@@ -1,6 +1,6 @@
 package com.cotfk.skills;
 
-import com.cotfk.creatures.CreatureBase;
+import com.cotfk.creatures.Human;
 import com.crown.common.ObjectsMap;
 import com.crown.i18n.I18n;
 import com.crown.i18n.ITemplate;
@@ -22,7 +22,7 @@ public class Spells extends ObjectsMap<Spell> {
 
     Spells() {
         add(new Spell<>(
-            CreatureBase.class,
+            Human.class,
             "Fatigue",
             new Action<>(null) {
                 @Override
@@ -56,7 +56,7 @@ public class Spells extends ObjectsMap<Spell> {
         ));
 
         add(new Spell<>(
-            CreatureBase.class,
+            Human.class,
             "Snare",
             new Action<>(null) {
                 @Override
@@ -88,7 +88,7 @@ public class Spells extends ObjectsMap<Spell> {
         ));
 
         add(new Spell<>(
-            CreatureBase.class,
+            Human.class,
             "Fireball",
             new Action<>(null) {
                 @Override

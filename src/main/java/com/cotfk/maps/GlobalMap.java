@@ -23,10 +23,10 @@ public class GlobalMap extends Map {
         for (int i = 0; i < xSize / 2; i++) {
             add(new Tree(this));
         }
-        for (int i = 0; i < xSize / 5; i++) {
+        for (int i = 0; i < xSize / 10; i++) {
             add(new House(this));
         }
-        for (int i = 0; i < xSize / 10; i++) {
+        for (int i = 0; i < xSize / 15; i++) {
             add(new Village(this));
         }
     }

@@ -6,7 +6,7 @@ import com.crown.common.utils.Random;
 import com.crown.maps.*;
 
 public class Village extends MapObject {
-    public static final int size = 5;
+    public static final int size = 6;
 
     public Village(Map map) {
         super(

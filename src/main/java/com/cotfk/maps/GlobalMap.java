@@ -8,12 +8,7 @@ import com.crown.maps.Map;
 import com.crown.maps.Point3D;
 
 public class GlobalMap extends Map {
-    public GlobalMap(
-        String name,
-        int xSize,
-        int ySize,
-        int zSize
-    ) {
+    public GlobalMap(String name, int xSize, int ySize, int zSize) {
         super(name, xSize, ySize, zSize);
         for (int y = 0; y < ySize; y++) {
             for (int x = 0; x < ySize; x++) {
@@ -43,6 +38,6 @@ public class GlobalMap extends Map {
 
     @Override
     public ITemplate getDescription() {
-        return I18n.of("");
+        return I18n.empty;
     }
 }

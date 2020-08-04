@@ -8,7 +8,7 @@ public class Warrior extends Human {
         super(
             name,
             map,
-            MapIcons.getIcons().get("pirate"),
+            MapIcons.addIcon("pirate"),
             MapWeight.OBSTACLE,
             pt
         );

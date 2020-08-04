@@ -29,12 +29,12 @@ public class GraphicalMapIcon extends MapIcon<BufferedImage> {
 
     @Override
     public ITemplate getName() {
-        return I18n.of("");
+        return I18n.empty;
     }
 
     @Override
     public ITemplate getDescription() {
-        return I18n.of("");
+        return I18n.empty;
     }
 
     public BufferedImage get() {

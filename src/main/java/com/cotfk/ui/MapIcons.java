@@ -8,8 +8,6 @@ public class MapIcons extends ObjectsMap<GraphicalMapIcon> {
         "emptiness",
         "grass",
         "house1",
-        "mage",
-        "pirate",
         "tree",
         "village",
         "windmill"
@@ -32,5 +30,11 @@ public class MapIcons extends ObjectsMap<GraphicalMapIcon> {
         for (String name : imageNames) {
             add(new GraphicalMapIcon(name));
         }
+    }
+
+    public static GraphicalMapIcon addIcon(String name) {
+        var icon = new GraphicalMapIcon(name);
+        getIcons().add(icon);
+        return icon;
     }
 }

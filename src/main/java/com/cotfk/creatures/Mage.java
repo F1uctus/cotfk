@@ -19,7 +19,7 @@ public class Mage extends Human {
         super(
             name,
             map,
-            MapIcons.getIcons().get("mage"),
+            MapIcons.addIcon("mage"),
             MapWeight.OBSTACLE,
             pt
         );

@@ -49,7 +49,7 @@
         <dependency>
             <groupId>com.github.F1uctus</groupId>
             <artifactId>crown</artifactId>
-            <version>4dbbc5ebb6fc30990025fe2f46092fb7d021adb5</version>
+            <version>57676328e197854ca53f6929952ae6d027b312c4</version>
         </dependency>
     </dependencies>
 </project>

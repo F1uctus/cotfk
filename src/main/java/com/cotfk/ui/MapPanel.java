@@ -115,7 +115,7 @@ public class MapPanel extends JPanel {
             Color(255, 255, 255, 80));
         g.fillRect(0, 0, dim.width, dim.height);
         g.setColor(Color.BLACK);
-        UITools.drawString(g, summary, 10, 0);
+        UITools.drawString(g, summary, new Point(10, 0));
     }
 
     private void drawMapToBuffer(Graphics g, MapObject[][][] objects, Point3D centerPoint, int radius) {
@@ -123,9 +123,9 @@ public class MapPanel extends JPanel {
         var relZero = centerPoint.minus(new Point3D(radius, radius, 0));
         int tileSide = getWidth() / (radius * 2 + 1);
         for (MapObject[][] objectsLayer : objects) {
-            for (int relY = 0; relY < objectsLayer.length; relY++) {
-                for (int relX = 0; relX < objectsLayer[relY].length; relX++) {
-                    MapObject mapObj = objectsLayer[relY][relX];
+            for (int areaY = 0; areaY < objectsLayer.length; areaY++) {
+                for (int areaX = 0; areaX < objectsLayer[areaY].length; areaX++) {
+                    MapObject mapObj = objectsLayer[areaY][areaX];
                     if (mapObj != null && mapObj.getMap() != null) {
                         var largeObj = largeObjs
                             .stream()
@@ -139,18 +139,20 @@ public class MapPanel extends JPanel {
                                 // if all parts of large object have been drawn
                                 largeObjs.remove(largeObj);
                             }
+                            // skip large object drawing because
+                            // it is already drawn from `pt0`.
                             continue;
                         }
                         var w = mapObj.getWidth();
                         var h = mapObj.getHeight();
-                        int relX0 = relX;
-                        int relY0 = relY;
+                        int areaX0 = areaX;
+                        int areaY0 = areaY;
                         if (w > 1 || h > 1) {
                             // save large objects to the container
                             largeObjs.add(new LargeMapObjectContainer(mapObj));
                             var objRelPt0 = mapObj.getPt0().minus(relZero);
-                            relX0 = objRelPt0.x;
-                            relY0 = objRelPt0.y;
+                            areaX0 = objRelPt0.x;
+                            areaY0 = objRelPt0.y;
                         }
                         g.drawImage(
                             ImageTools.resizeTile(
@@ -158,8 +160,8 @@ public class MapPanel extends JPanel {
                                 tileSide * h,
                                 tileSide * w
                             ),
-                            tileSide * relX0,
-                            tileSide * relY0,
+                            tileSide * areaX0,
+                            tileSide * areaY0,
                             null
                         );
                     }

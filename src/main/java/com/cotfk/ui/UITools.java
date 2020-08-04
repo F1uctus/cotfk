@@ -17,10 +17,10 @@ public class UITools {
         );
     }
 
-    public static void drawString(Graphics g, String text, int x, int y) {
+    public static void drawString(Graphics g, String text, Point point) {
         int lineHeight = g.getFontMetrics().getHeight();
         for (String line : text.split("\n")) {
-            g.drawString(line, x, y += lineHeight);
+            g.drawString(line, point.x, point.y += lineHeight);
         }
     }
 }

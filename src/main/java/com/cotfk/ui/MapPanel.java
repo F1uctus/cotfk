@@ -162,9 +162,6 @@ public class MapPanel extends JPanel {
                             tileSide * relY0,
                             null
                         );
-                        if (w > 1) {
-                            relX += w - 1;
-                        }
                     }
                 }
             }

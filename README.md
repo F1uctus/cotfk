@@ -11,7 +11,7 @@
     </a>
 </p>
 
-<h3 align="center">Crown of the Fallen King - An example RPG built with <a href="https://github.com/F1uctus/crown-framework">Crown.</a></h3>
+<h3 align="center">Crown of the Fallen King - An example RPG built with <a href="https://github.com/F1uctus/crown">Crown.</a></h3>
 
 **Powered by JDK 11**
 

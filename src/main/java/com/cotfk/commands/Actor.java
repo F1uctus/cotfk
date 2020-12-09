@@ -15,10 +15,9 @@ public class Actor {
     }
 
     public static ITemplate pick(String name) {
-        if (lastUsedTimeline != Timeline.main
-            && player == null
-            || player.getTimeline() == null) {
+        if (player == null || player.getTimeline() == null) {
             lastUsedTimeline = Timeline.main;
+
         } else {
             lastUsedTimeline = player.getTimeline();
         }

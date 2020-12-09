@@ -19,7 +19,8 @@ public class Main {
     private static MainWindow mainWindow;
     private static boolean lastCmdSuccess = true;
 
-    public static final int MAP_SIZE = 101;
+    public static final int MAP_SIZE = 51;
+    public static final int TILE_SIZE = 50;
 
     public static void main(String[] args) {
         bundles.put("ru", ResourceBundle.getBundle("gameMessages", new Locale("ru_RU")));

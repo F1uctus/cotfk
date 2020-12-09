@@ -17,7 +17,7 @@ public class MainWindow extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setUndecorated(true);
         setLocation(25, 25);
-        setMinimumSize(new Dimension(MAP_SIZE * 5, MAP_SIZE * 5));
+        setSize(new Dimension(10 * MAP_SIZE, 10 * MAP_SIZE));
         setContentPane(new MapPanel(this));
         setVisible(true);
 

@@ -31,8 +31,8 @@ public class MapPanel extends JPanel {
     }
 
     // Double buffering
-    private BufferedImage dbImage;
-    private Graphics dbg;
+    private BufferedImage bufferedMapImage;
+    private Graphics bufferedMapGraphics;
 
     private UUID[][] lastMapIds;
 
@@ -54,25 +54,27 @@ public class MapPanel extends JPanel {
 
         var player = Actor.get();
 
-        if (dbImage == null) {
+        if (bufferedMapImage == null) {
             // Create the buffer
-            dbImage = (BufferedImage) createImage(getWidth(), getHeight());
-            dbg = dbImage.getGraphics();
+            bufferedMapImage = (BufferedImage) createImage(getWidth(), getHeight());
+            bufferedMapGraphics = bufferedMapImage.getGraphics();
         }
         Map map;
         int radius;
         Point3D centerPoint;
+        // computing visible bounds
         if (player == null) {
             map = Timeline.main.getGameState().getGlobalMap();
             radius = map.xSize / 2;
-            centerPoint = new Point3D(map.xSize / 2, map.ySize / 2, map.zSize - 1);
+            int center = radius % 2 == 0 ? radius + 1 : radius;
+            centerPoint = new Point3D(center, center, map.zSize - 1);
         } else {
             map = player.getMap();
             radius = player.getFov();
             centerPoint = player.getPt0().withZ(map.zSize - 1);
         }
+        // saving object ids
         MapObject[][][] objects = map.getRaw3DArea(centerPoint, radius);
-        int maxZ = objects.length;
         int maxY = objects[0].length;
         int maxX = objects[0][0].length;
         var mapIds = new UUID[maxY][maxX];
@@ -89,10 +91,10 @@ public class MapPanel extends JPanel {
         if (lastMapIds == null
             || !(maxY == lastMapIds.length && maxX == lastMapIds[0].length)
             || !Arrays.deepEquals(mapIds, lastMapIds)) {
-            drawMapToBuffer(dbg, objects, centerPoint, radius);
+            drawMapToBuffer(bufferedMapGraphics, objects, centerPoint, radius);
         }
         lastMapIds = mapIds;
-        g.drawImage(dbImage, 0, 0, null);
+        g.drawImage(bufferedMapImage, 0, 0, null);
 
         var nowTime = timeFormatter.format(Timeline.getClock().now());
         var summary = nowTime + "\n";
@@ -106,13 +108,9 @@ public class MapPanel extends JPanel {
                 player.getStats().getLocalized(player.lang)
             );
         }
-        g.setFont(g.getFont().
-
-            deriveFont(14f));
+        g.setFont(g.getFont().deriveFont(14f));
         Dimension dim = UITools.getTextSize(g, summary);
-        g.setColor(new
-
-            Color(255, 255, 255, 80));
+        g.setColor(new Color(255, 255, 255, 80));
         g.fillRect(0, 0, dim.width, dim.height);
         g.setColor(Color.BLACK);
         UITools.drawString(g, summary, new Point(10, 0));
@@ -176,7 +174,7 @@ public class MapPanel extends JPanel {
 
         LargeMapObjectContainer(MapObject obj) {
             this.obj = obj;
-            unfilledCellsCount = obj.getParticles().length - 1;
+            unfilledCellsCount = obj.getPoints().length - 1;
         }
     }
 }

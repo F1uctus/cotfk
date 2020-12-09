@@ -32,7 +32,12 @@ public class GameApiTest {
         // Each test runs in isolated timeline.
         Timeline.main = new Timeline(
             new GameState(
-                new GlobalMap("Map", 11, 11, MapLevel.height)
+                new GlobalMap(
+                    "Map",
+                    11,
+                    11,
+                    MapLevel.height
+                ).flatTerrain()
             )
         );
         // Player is captured by `new` command automatically,

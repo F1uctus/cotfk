@@ -40,7 +40,8 @@ public class Main {
                         MAP_SIZE,
                         MAP_SIZE,
                         MapLevel.height
-                    ))
+                    ).flatTerrain().generateObjects()
+                )
             );
         });
 

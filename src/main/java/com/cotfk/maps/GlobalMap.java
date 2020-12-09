@@ -15,6 +15,18 @@ public class GlobalMap extends Map {
                 add(new Grass(this, new Point3D(x, y, MapLevel.ground)));
             }
         }
+    }
+
+    public GlobalMap flatTerrain() {
+        for (int y = 0; y < ySize; y++) {
+            for (int x = 0; x < ySize; x++) {
+                add(new Grass(this, new Point3D(x, y, MapLevel.ground)));
+            }
+        }
+        return this;
+    }
+
+    public GlobalMap generateObjects() {
         for (int i = 0; i < xSize / 2; i++) {
             add(new Tree(this));
         }
@@ -24,6 +36,7 @@ public class GlobalMap extends Map {
         for (int i = 0; i < xSize / 15; i++) {
             add(new Village(this));
         }
+        return this;
     }
 
     @Override

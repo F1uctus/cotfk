@@ -7,6 +7,7 @@ import com.crown.time.Timeline;
 import com.crown.time.VirtualClock;
 import org.junit.jupiter.api.*;
 
+import java.time.Instant;
 import java.util.*;
 
 import static com.cotfk.commands.CommandParser.parse;
@@ -43,6 +44,8 @@ public class GameApiTest {
         // Player is captured by `new` command automatically,
         // so we need to deselect player from old game state.
         Actor.free();
+        // Reset clock
+        Timeline.getClock().startAt(Instant.EPOCH);
     }
 
     private static GameState gs() {

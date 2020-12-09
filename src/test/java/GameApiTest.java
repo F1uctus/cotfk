@@ -2,6 +2,7 @@ import com.cotfk.GameState;
 import com.cotfk.commands.Actor;
 import com.cotfk.maps.GlobalMap;
 import com.cotfk.maps.MapLevel;
+import com.crown.creatures.Organism;
 import com.crown.i18n.I18n;
 import com.crown.time.Timeline;
 import com.crown.time.VirtualClock;
@@ -106,5 +107,54 @@ public class GameApiTest {
         parse("new w b");
         assertEquals(2, gs().players.size());
         assertEquals("b", Actor.get().getName().getLocalized());
+    }
+
+    @Test
+    public void checkPlayerEnergyDrain() {
+        parse("new w a");
+        Organism a = gs().players.get("a");
+        int xs = gs().getGlobalMap().xSize;
+        int ys = gs().getGlobalMap().ySize;
+        int xToCenter = (int) Math.ceil(xs / 2d)  - a.getPt0().x;
+        int yToCenter = (int) Math.ceil(ys / 2d)  - a.getPt0().y;
+        parse("move " + xToCenter + " " + yToCenter);
+        assertEquals((int) Math.ceil(xs / 2d), a.getPt0().x);
+        assertEquals((int) Math.ceil(ys / 2d), a.getPt0().y);
+
+        // draining energy through repeated movements
+        for (int step = 1; a.getEnergy() > 0; step = -step) {
+            parse("move " + step + " 0");
+        }
+
+        var failResult = parse("move 1 0");
+        assertEquals(
+            I18n.of("move.lowEnergy").getLocalized(),
+            failResult.getLocalized()
+        );
+    }
+
+    @Test
+    public void checkPlayerEnergyFulfillBySleep() {
+        parse("new w a");
+        Organism a = gs().players.get("a");
+        int xs = gs().getGlobalMap().xSize;
+        int ys = gs().getGlobalMap().ySize;
+        int xToCenter = (int) Math.ceil(xs / 2d)  - a.getPt0().x;
+        int yToCenter = (int) Math.ceil(ys / 2d)  - a.getPt0().y;
+        parse("move " + xToCenter + " " + yToCenter);
+        assertEquals((int) Math.ceil(xs / 2d), a.getPt0().x);
+        assertEquals((int) Math.ceil(ys / 2d), a.getPt0().y);
+
+        // draining energy through repeated movements
+        for (int step = 1; a.getEnergy() > 0; step = -step) {
+            parse("move " + step + " 0");
+        }
+
+        var result = parse("sleep");
+
+        assertEquals(
+            I18n.okMessage,
+            result
+        );
     }
 }

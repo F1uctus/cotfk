@@ -17,14 +17,12 @@ public class Human extends Organism {
         String name,
         Map map,
         MapIcon<?> mapIcon,
-        MapWeight mapWeight,
         Point3D position
     ) {
         super(
             name,
             map,
             mapIcon,
-            mapWeight,
             position,
             100,
             100,

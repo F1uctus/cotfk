@@ -13,7 +13,6 @@ public class House extends MapObject {
             "House",
             map,
             MapIcons.getIcons().get("house1"),
-            MapWeight.OBSTACLE,
             LargeObjectTemplates.getSquareLinearZTemplate(
                 Random.getPoint(map, size, size).withZ(MapLevel.ground + 1),
                 size

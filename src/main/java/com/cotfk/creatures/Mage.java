@@ -7,7 +7,6 @@ import com.crown.i18n.I18n;
 import com.crown.i18n.ITemplate;
 import com.crown.maps.*;
 import com.crown.time.Action;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.stream.Collectors;
@@ -20,12 +19,11 @@ public class Mage extends Human {
             name,
             map,
             MapIcons.addIcon("mage"),
-            MapWeight.OBSTACLE,
             pt
         );
     }
 
-    public <T extends MapObject> ITemplate cast(Spell<T> spell, @Nullable T target) {
+    public <T extends MapObject> ITemplate cast(Spell<T> spell, T target) {
         if (knownSpells.get(spell.getKeyName()) == null) {
             return I18n.of("mage.dontKnowSpell");
         }

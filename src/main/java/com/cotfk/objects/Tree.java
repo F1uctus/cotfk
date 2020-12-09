@@ -13,7 +13,6 @@ public class Tree extends MapObject {
             "Tree",
             map,
             MapIcons.getIcons().get("tree"),
-            MapWeight.OBSTACLE,
             LargeObjectTemplates.getSquareLinearZTemplate(
                 Random.getPoint(map, size, size).withZ(MapLevel.ground + 1),
                 size

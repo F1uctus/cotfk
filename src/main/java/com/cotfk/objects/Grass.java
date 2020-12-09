@@ -5,7 +5,7 @@ import com.crown.maps.*;
 
 public class Grass extends MapObject {
     public Grass(Map map, Point3D pt) {
-        super("Grass", map, MapIcons.getIcons().get("grass"), MapWeight.BLOCKS_LIGHT, pt);
+        super("Grass", map, MapIcons.getIcons().get("grass"), pt);
     }
 
     @Override

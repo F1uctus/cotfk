@@ -9,7 +9,6 @@ public class Warrior extends Human {
             name,
             map,
             MapIcons.addIcon("pirate"),
-            MapWeight.OBSTACLE,
             pt
         );
     }

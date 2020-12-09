@@ -39,9 +39,9 @@ public class GraphicalMapIcon extends MapIcon<BufferedImage> {
 
     public BufferedImage get() {
         var dir = getDirection();
-        if (dir == Direction.east
-            || dir == Direction.northEast
-            || dir == Direction.southEast) {
+        if (dir == Direction.e
+            || dir == Direction.ne
+            || dir == Direction.se) {
             return ImageTools.flipX(img);
         }
         return img;

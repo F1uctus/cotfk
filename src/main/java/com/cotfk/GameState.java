@@ -4,7 +4,7 @@ import com.cotfk.creatures.Mage;
 import com.cotfk.creatures.Warrior;
 import com.cotfk.maps.MapLevel;
 import com.crown.BaseGameState;
-import com.crown.common.utils.Random;
+import com.crown.tools.Random;
 import com.crown.creatures.Organism;
 import com.crown.i18n.I18n;
 import com.crown.i18n.ITemplate;

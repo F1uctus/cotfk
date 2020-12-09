@@ -22,7 +22,7 @@ public class GameApiTest {
         // Internationalization is static across any timeline.
         bundles.put("en", ResourceBundle.getBundle("gameMessages", new Locale("en_US")));
         I18n.init(bundles);
-        Timeline.init(
+        Timeline.setMain(
             new VirtualClock(24, () -> {
             }),
             null

@@ -2,7 +2,7 @@ package com.cotfk.objects;
 
 import com.cotfk.maps.MapLevel;
 import com.cotfk.ui.MapIcons;
-import com.crown.common.utils.Random;
+import com.crown.tools.Random;
 import com.crown.maps.*;
 
 public class House extends MapObject {

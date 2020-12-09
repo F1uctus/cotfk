@@ -40,6 +40,10 @@
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
+        <repository>
+            <id>articdive-nexus</id>
+            <url>https://repo.minestom.com/repository/maven-public</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -56,7 +60,7 @@
         <dependency>
             <groupId>com.github.f1uctus</groupId>
             <artifactId>crown</artifactId>
-            <version>0.9.0</version>
+            <version>0.10.0d</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>

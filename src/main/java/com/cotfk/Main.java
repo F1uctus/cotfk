@@ -29,7 +29,7 @@ public class Main {
 
         EventQueue.invokeLater(() -> {
             mainWindow = new MainWindow();
-            Timeline.init(
+            Timeline.setMain(
                 new VirtualClock(
                     24,
                     mainWindow::repaint

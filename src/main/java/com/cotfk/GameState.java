@@ -26,7 +26,7 @@ public class GameState extends BaseGameState {
             return I18n.of("player.nameReserved");
         }
 
-        Point3D pt = Random.getFreePoint(getGlobalMap(), new Point3D(-1, -1, MapLevel.ground + 1));
+        Point3D pt = Random.getFreePoint(getGlobalMap()).withZ(MapLevel.ground + 1);
 
         Organism newPlayer;
         if ("mage".startsWith(type)) {

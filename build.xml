@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="cotfk" default="build">
+<project name="cotfk" default="test">
     <property name="target.dir" value="target"/>
     <property name="classes.dir" value="${target.dir}/classes"/>
     <property name="test.report.dir" value="${target.dir}/test-report"/>

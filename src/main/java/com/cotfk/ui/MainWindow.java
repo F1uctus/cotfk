@@ -8,6 +8,7 @@ import java.awt.*;
 import java.awt.event.*;
 
 import static com.cotfk.Main.MAP_SIZE;
+import static com.cotfk.Main.printInputPrefix;
 
 public class MainWindow extends JFrame {
     private Point initialClick;
@@ -18,14 +19,29 @@ public class MainWindow extends JFrame {
         setUndecorated(true);
         setLocation(25, 25);
         setSize(new Dimension(10 * MAP_SIZE, 10 * MAP_SIZE));
-        setContentPane(new MapPanel(this));
+
+        var p = new JPanel();
+        p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
+        p.add(new MapPanel(this));
+        var cl = new TextField();
+        cl.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println(cl.getText());
+                Main.invoke(cl.getText());
+                printInputPrefix();
+                MainWindow.this.requestFocusInWindow();
+            }
+        });
+        p.add(cl);
+        setContentPane(p);
         setVisible(true);
+        requestFocusInWindow();
 
         addKeyListener(new KeyListener() {
             public void keyPressed(KeyEvent e) {
                 int key = e.getKeyCode();
-                var cp = Actor.get();
-                if (cp != null) {
+                if (Actor.get() != null) {
                     if (key == KeyEvent.VK_LEFT) {
                         Main.invoke("move -1 0", true);
                     } else if (key == KeyEvent.VK_RIGHT) {

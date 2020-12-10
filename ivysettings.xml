@@ -4,7 +4,7 @@
     <resolvers>
         <ibiblio name="central" m2compatible="true"/>
         <filesystem name="local">
-            <artifact pattern="${ivy.settings.dir}/target/deps/[artifact]-[revision].[ext]"/>
+            <artifact pattern="${ivy.settings.dir}/target/deps/[artifact].[ext]"/>
         </filesystem>
     </resolvers>
     <modules>

@@ -51,14 +51,7 @@ public class Main {
         new Thread(() -> {
             while (true) {
                 printInputPrefix();
-                String input = s.nextLine();
-                if (input.equals("")) {
-                    continue;
-                }
-                if (input.equals("exit") || input.equals("quit")) {
-                    break;
-                }
-                invoke(input);
+                invoke(s.nextLine());
             }
         }).start();
     }
@@ -68,6 +61,13 @@ public class Main {
     }
 
     public static void invoke(String command, boolean silent) {
+        if (command.isBlank()) {
+            return;
+        }
+        if (command.equals("exit") || command.equals("quit")) {
+            System.exit(0);
+        }
+
         var result = CommandParser.parse(command);
 
         if (!silent) {

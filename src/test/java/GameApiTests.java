@@ -14,7 +14,7 @@ import java.util.*;
 import static com.cotfk.commands.CommandParser.parse;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class GameApiTest {
+public class GameApiTests {
     public static final HashMap<String, ResourceBundle> bundles = new HashMap<>();
 
     @BeforeAll

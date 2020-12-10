@@ -7,7 +7,6 @@ import com.crown.i18n.ITemplate;
 import com.crown.time.Timeline;
 
 public class Actor {
-    private static Timeline lastUsedTimeline;
     private static Human player;
 
     public static Human get() {
@@ -15,6 +14,7 @@ public class Actor {
     }
 
     public static ITemplate pick(String name) {
+        Timeline lastUsedTimeline;
         if (player == null || player.getTimeline() == null) {
             lastUsedTimeline = Timeline.main;
 

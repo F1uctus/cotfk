@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ivysettings>
+    <settings defaultResolver="central"/>
+    <resolvers>
+        <ibiblio name="central" m2compatible="true"/>
+        <filesystem name="local">
+            <artifact pattern="${ivy.settings.dir}/target/deps/[artifact]-[revision].[ext]"/>
+        </filesystem>
+    </resolvers>
+    <modules>
+        <module organisation="com.github.f1uctus" resolver="local"/>
+    </modules>
+</ivysettings>

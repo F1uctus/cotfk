@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="cotfk" default="build">
+    <property name="target.dir" value="target"/>
+    <property name="classes.dir" value="${target.dir}/classes"/>
+    <property name="test.report.dir" value="${target.dir}/test-report"/>
+    <property name="test.classes.dir" value="${target.dir}/test-classes"/>
+    <property name="deps.dir" value="${target.dir}/deps"/>
+
+    <path id="sourcepath">
+        <dirset dir="src">
+            <include name="main/java"/>
+            <include name="main/resources"/>
+        </dirset>
+    </path>
+    <path id="classpath">
+        <fileset dir="${deps.dir}" includes="*.jar"/>
+        <pathelement path="${classes.dir}"/>
+    </path>
+    <path id="test.sourcepath">
+        <path refid="sourcepath"/>
+        <dirset dir="src">
+            <include name="test/java"/>
+        </dirset>
+    </path>
+    <path id="test.classpath">
+        <path refid="classpath"/>
+        <pathelement path="${test.classes.dir}"/>
+    </path>
+
+    <property name="compiler.args" value="-encoding UTF-8 -source 11 -target 11"/>
+    <property name="target.jar" value="${target.dir}/cotfk.jar"/>
+    <property name="target.tests.jar" value="${target.dir}/cotfk-tests.jar"/>
+
+    <target name="install">
+        <property name="ivy.version" value="2.5.0"/>
+
+        <property name="deps.ant.dir" value="${deps.dir}/ant"/>
+
+        <property name="deps.ivy.jar" value="${deps.ant.dir}/ivy-${ivy.version}.jar"/>
+        <property name="deps.xmltask.jar" value="${deps.ant.dir}/xmltask.jar"/>
+
+        <mkdir dir="${deps.ant.dir}"/>
+
+        <!-- Download & include XmlTask -->
+        <get src="https://nav.dl.sourceforge.net/project/xmltask/xmltask/1.16/xmltask.jar"
+             dest="${deps.xmltask.jar}" usetimestamp="true"/>
+
+        <taskdef name="xmltask" classname="com.oopsconsultancy.xmltask.ant.XmlTask">
+            <classpath>
+                <pathelement location="${deps.xmltask.jar}"/>
+            </classpath>
+        </taskdef>
+
+        <!-- Download & include Ivy -->
+        <get src="https://repo1.maven.org/maven2/org/apache/ivy/ivy/${ivy.version}/ivy-${ivy.version}.jar"
+             dest="${deps.ivy.jar}" usetimestamp="true"/>
+
+        <taskdef resource="org/apache/ivy/ant/antlib.xml">
+            <classpath>
+                <pathelement location="${deps.ivy.jar}"/>
+            </classpath>
+        </taskdef>
+
+        <!-- Regenerate dependencies list from POM -->
+        <delete file="ivy.xml"/>
+        <convertpom pomFile="pom.xml" ivyFile="ivy.xml"/>
+
+        <!-- Read Crown version from POM -->
+        <xmltask source="ivy.xml">
+            <copy path="/ivy-module/dependencies//dependency[1]/@rev" property="crown.version"/>
+        </xmltask>
+
+        <!-- Download dependencies -->
+        <get src="https://jitpack.io/com/github/f1uctus/crown/${crown.version}/crown-${crown.version}.jar"
+             dest="${deps.dir}/crown.jar" usetimestamp="true"/>
+
+        <retrieve pattern="${deps.dir}/[artifact].[ext]"/>
+
+        <delete file="ivy.xml"/>
+    </target>
+
+    <target name="build" depends="install">
+        <!-- Copy resources -->
+        <mkdir dir="${classes.dir}"/>
+        <copy todir="${classes.dir}">
+            <fileset dir="src/main/resources"/>
+        </copy>
+
+        <javac destdir="${classes.dir}" includeantruntime="false" fork="true">
+            <src refid="sourcepath"/>
+            <compilerarg line="${compiler.args}"/>
+            <classpath refid="classpath"/>
+        </javac>
+        <jar destfile="${target.jar}" basedir="${classes.dir}">
+            <manifest>
+                <attribute name="Main-Class" value="com.cotfk.Main"/>
+                <attribute name="Class-Path" value="deps/crown.jar deps/commons-lang3.jar"/>
+            </manifest>
+            <fileset dir="." includes="${deps.dir}/*"/>
+        </jar>
+    </target>
+
+    <target name="run" depends="build">
+        <java classpathref="test.classpath" jar="${target.jar}" fork="true"/>
+    </target>
+
+    <target name="build-tests" depends="install">
+        <!-- Copy resources -->
+        <mkdir dir="${test.classes.dir}"/>
+        <copy todir="${test.classes.dir}">
+            <fileset dir="src/main/resources"/>
+        </copy>
+
+        <javac destdir="${test.classes.dir}" includeantruntime="false" fork="true">
+            <src refid="test.sourcepath"/>
+            <compilerarg line="${compiler.args}"/>
+            <classpath refid="classpath"/>
+        </javac>
+        <jar destfile="${target.tests.jar}" basedir="${test.classes.dir}"/>
+    </target>
+
+    <target name="test" depends="build-tests">
+        <java classpathref="test.classpath" classname="org.junit.platform.console.ConsoleLauncher"
+              fork="true" failonerror="true">
+            <arg value="--scan-classpath"/>
+            <arg value="--disable-ansi-colors"/>
+            <arg value="--disable-banner"/>
+            <arg line="--reports-dir ${test.report.dir}"/>
+        </java>
+        <junitreport todir="${test.report.dir}">
+            <fileset dir="${test.report.dir}">
+                <include name="TEST-*.xml"/>
+            </fileset>
+            <report format="frames" todir="${test.report.dir}/html"/>
+        </junitreport>
+    </target>
+</project>
